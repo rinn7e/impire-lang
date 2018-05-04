@@ -1,0 +1,5 @@
+def foo(x y) 
+    x+foo(y, 4.0);
+
+def plus(a b)
+    a + b;
