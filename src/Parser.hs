@@ -51,7 +51,8 @@ unop = Ex.Prefix (UnaryOp <$> op)
 
 binop = Ex.Infix (BinaryOp <$> op) Ex.AssocLeft
 
-binops = [[binary "*" Ex.AssocLeft,
+binops = [[binary "=" Ex.AssocLeft]
+        ,[binary "*" Ex.AssocLeft,
           binary "/" Ex.AssocLeft]
         ,[binary "+" Ex.AssocLeft,
           binary "-" Ex.AssocLeft]
@@ -108,12 +109,25 @@ for = do
   body <- expr
   return $ For var start cond step body
 
+letins :: Parser Expr
+letins = do
+  reserved "var"
+  defs <- commaSep $ do
+    var <- identifier
+    reservedOp "="
+    val <- expr
+    return (var, val)
+  reserved "in"
+  body <- expr
+  return $ foldr (uncurry Let) body defs
+
 factor :: Parser Expr
 factor = try floating
       <|> try int
       <|> try call
       <|> try variable
       <|> ifthen
+      <|> try letins
       <|> for
       <|> (parens expr)
 

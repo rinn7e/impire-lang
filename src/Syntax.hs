@@ -14,6 +14,7 @@ data Expr
   | UnaryDef Name [Name] Expr
   | If Expr Expr Expr
   | For Name Expr Expr Expr Expr
+  | Let Name Expr Expr
   deriving (Eq, Ord, Show)
 
 -- def plus (a b) a + b;

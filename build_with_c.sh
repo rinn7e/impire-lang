@@ -10,4 +10,5 @@ gcc cbits.o -shared -o cbits.so
 
 cd ..
 stack build --ghc-options="-O0"
-stack exec impire $IMAGE
+# stack exec impire $IMAGE
+stack exec impire "static/mutable-variable.im"
