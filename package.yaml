@@ -19,6 +19,8 @@ extra-source-files:
 # common to point users to the README.md file.
 description:         Please see the README on GitHub at <https://github.com/githubuser/impire#readme>
 
+c-sources: app/cbits.c
+
 dependencies:
 - base >= 4.7 && < 5
 - parsec
@@ -39,6 +41,7 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - app/cbits.so
     dependencies:
     - impire
 

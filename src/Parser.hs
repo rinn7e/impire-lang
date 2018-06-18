@@ -20,13 +20,45 @@ floating = Float <$> float
 
 binary s assoc = Ex.Infix (reservedOp s >> return (BinaryOp s)) assoc
 
+op :: Parser String
+op = do
+  whitespace
+  o <- operator
+  whitespace
+  return o
+
+unarydef :: Parser Expr
+unarydef = do
+  reserved "def"
+  reserved "unary"
+  o <- op
+  args <- parens $ many identifier
+  body <- expr
+  return $ UnaryDef o args body
+
+binarydef :: Parser Expr
+binarydef = do
+  reserved "def"
+  reserved "binary"
+  o <- op
+  prec <- int
+  args <- parens $ many identifier
+  body <- expr
+  return $ BinaryDef o args body
+
+
+unop = Ex.Prefix (UnaryOp <$> op)
+
+binop = Ex.Infix (BinaryOp <$> op) Ex.AssocLeft
+
 binops = [[binary "*" Ex.AssocLeft,
           binary "/" Ex.AssocLeft]
         ,[binary "+" Ex.AssocLeft,
-          binary "-" Ex.AssocLeft]]
+          binary "-" Ex.AssocLeft]
+        ,[binary "<" Ex.AssocLeft]]
 
 expr :: Parser Expr
-expr =  Ex.buildExpressionParser binops factor
+expr = Ex.buildExpressionParser (binops ++ [[unop], [binop]]) factor
 
 variable :: Parser Expr
 variable = Var <$> identifier
@@ -52,17 +84,47 @@ call = do
   args <- parens $ commaSep expr
   return $ Call name args
 
+ifthen :: Parser Expr
+ifthen = do
+  reserved "if"
+  cond <- expr
+  reserved "then"
+  tr <- expr
+  reserved "else"
+  fl <- expr
+  return $ If cond tr fl
+
+for :: Parser Expr
+for = do
+  reserved "for"
+  var <- identifier
+  reservedOp "="
+  start <- expr
+  reservedOp ","
+  cond <- expr
+  reservedOp ","
+  step <- expr
+  reserved "in"
+  body <- expr
+  return $ For var start cond step body
+
 factor :: Parser Expr
 factor = try floating
       <|> try int
       <|> try call
       <|> try variable
+      <|> ifthen
+      <|> for
       <|> (parens expr)
 
 defn :: Parser Expr
 defn = try extern
-    <|> try function
-    <|> expr
+      <|> try function
+      <|> try unarydef
+      <|> try binarydef
+      <|> expr
+
+
 
 contents :: Parser a -> Parser a
 contents p = do

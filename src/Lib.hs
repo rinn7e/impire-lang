@@ -21,6 +21,7 @@ process modo source = do
   case res of
     Left err -> print err >> return Nothing
     Right ex -> do
+      print $ show ex
       ast <- codegen modo ex
       return $ Just ast
 
@@ -39,6 +40,14 @@ repl = runInputT defaultSettings (loop initModule)
         case modn of
           Just modn -> loop modn
           Nothing -> loop mod
+        -- let resultEither = parseToplevel input 
+        -- case resultEither of
+        --   Right a -> do
+        --     print $ show a
+        --     loop mod
+        --   Left err -> 
+        --     loop mod
+        
 
 run :: IO ()
 run = do
