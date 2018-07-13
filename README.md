@@ -1,5 +1,16 @@
 # impire
 
+
+## Build 
+
+```
+stack build --ghc-options="-O0"  
+
+stack exec impire static/${file_name}      
+
+```
+## Note
+
 LLVM Syntax
 
 - i1	            A unsigned 1 bit integer
@@ -45,3 +56,61 @@ def fib(x)
       fib(x-1) + fib(x-2);
 
 0.0 is considered to be false and everything else is considered to be true.
+
+
+
+# Feature
+
+## Normal Function
+
+```
+def main (a b) a + b;
+```
+
+## Recursive
+```
+def foo(x y) 
+    x + foo(y, 4.0);
+
+```
+
+## For loop
+```
+extern putchard(char);
+
+def printstar(n)
+  for i = 1, i < n, 1.0 in
+    putchard(42);  # ascii 42 = '*'
+
+# print 100 '*' characters
+printstar(100);
+```
+
+## If - Else
+```
+def fib(x)
+   if x < 3 then
+      1
+   else
+      fib(x-1) + fib(x-2);
+```
+
+## Own operator
+
+```
+def binary : 1 (x y) y;
+```
+Check operator primitive
+
+## Mutable variable
+
+Re-define variable x
+
+```
+def main(x) x = 1;
+```
+
+
+## Final Useful result
+
+Check generate-image.im

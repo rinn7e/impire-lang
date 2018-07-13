@@ -18,7 +18,6 @@ int = do
 floating :: Parser Expr
 floating = Float <$> float
 
-binary s assoc = Ex.Infix (reservedOp s >> return (BinaryOp s)) assoc
 
 op :: Parser String
 op = do
@@ -46,6 +45,7 @@ binarydef = do
   body <- expr
   return $ BinaryDef o args body
 
+binary s assoc = Ex.Infix (reservedOp s >> return (BinaryOp s)) assoc
 
 unop = Ex.Prefix (UnaryOp <$> op)
 

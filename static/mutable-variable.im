@@ -18,5 +18,15 @@ def fibi(x)
     b = c) :
   b;
 
+def sum(x)
+  var a = 0, stop = (x + 1) in
+  (for i = 0, i < stop, 1.0 in
+    a = i + a
+  ) : 
+  a;
+  
+
 # Call it. 
-fibi(10);
+#fibi(10);
+
+sum(3);
